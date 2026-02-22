@@ -1,7 +1,6 @@
-from django.views import View
-from django.http import HttpResponse
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
-
-class HomeView(View):
-    def get(self, request):
-        return HttpResponse("Home Page")
+@login_required
+def home(request):
+    return render(request, 'home.html')
