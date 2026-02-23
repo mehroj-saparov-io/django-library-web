@@ -1,18 +1,33 @@
 {% extends 'base.html' %}
-{% block title %}Verify Email{% endblock %}
+
+{% block title %}Verify Email - BusterDev{% endblock %}
 
 {% block content %}
-<div class="auth-card">
-    <h2>Email tasdiqlash</h2>
-
-    {% if error %}
-        <div class="error-box">{{ error }}</div>
-    {% endif %}
-
-    <form method="post">
-        {% csrf_token %}
-        <input type="text" name="code" placeholder="6 xonali kod" required>
-        <button class="btn btn-full">Tasdiqlash</button>
-    </form>
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Email Tasdiqlash</h4>
+            </div>
+            <div class="card-body">
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+                <p>Biz sizning email manzilingizga tasdiqlash kodi yubordik. Iltimos, quyidagi kodni kiriting:</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="code" class="form-label">Verification Code</label>
+                        <input type="text" name="code" id="code" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-info w-100">Tasdiqlash</button>
+                </form>
+                <hr>
+                <p class="text-center mb-0">
+                    Kodni olmaganmisiz? Tekshirib ko‘ring spam folder yoki qayta ro‘yxatdan o‘ting.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

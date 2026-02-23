@@ -15,6 +15,13 @@ def register_view(request):
         username = request.POST.get('username', '').strip()
         email = request.POST.get('email', '').lower().strip()
         password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        # Parollar mosligini tekshirish
+        if password != confirm_password:
+            return render(request, 'users/register.html', {
+                'error': 'Parollar mos kelmadi'
+            })
 
         if User.objects.filter(email=email).exists():
             return render(request, 'users/register.html', {
@@ -27,10 +34,7 @@ def register_view(request):
             })
 
         code = generate_code()
-
-        # eski sessionni tozalaymiz
         request.session.flush()
-
         request.session['verify_code'] = code
         request.session['register_data'] = {
             'username': username,
@@ -42,13 +46,9 @@ def register_view(request):
             send_mail(
                 subject="BusterDev — Email tasdiqlash kodi",
                 message=(
-                    "Assalomu alaykum!\n\n"
-                    "Ro‘yxatdan o‘tishni tasdiqlash kodingiz:\n\n"
-                    f"{code}\n\n"
-                    "Agar bu amalni siz bajarmagan bo‘lsangiz, "
-                    "xabarni e’tiborsiz qoldiring.\n\n"
-                    "Hurmat bilan,\n"
-                    "BusterDev jamoasi"
+                    f"Assalomu alaykum!\n\nRo‘yxatdan o‘tishni tasdiqlash kodingiz: {code}\n\n"
+                    "Agar bu amalni siz bajarmagan bo‘lsangiz, xabarni e’tiborsiz qoldiring.\n\n"
+                    "Hurmat bilan,\nBusterDev jamoasi"
                 ),
                 from_email="BusterDev <yourgmail@gmail.com>",
                 recipient_list=[email],
@@ -62,7 +62,6 @@ def register_view(request):
         return redirect('verify_email')
 
     return render(request, 'users/register.html')
-
 
 def verify_email(request):
     if request.method == 'POST':
@@ -94,7 +93,7 @@ def verify_email(request):
         request.session.set_expiry(SESSION_EXPIRE_TIME)
 
         messages.success(request, "Email tasdiqlandi! Xush kelibsiz 👋")
-        return redirect('home')
+        return redirect('books:home')
 
     return render(request, 'users/verify_email.html')
 
@@ -108,7 +107,7 @@ def login_view(request):
         if user:
             login(request, user)
             request.session.set_expiry(SESSION_EXPIRE_TIME)
-            return redirect('home')
+            return redirect('books:home')
 
         return render(request, 'users/login.html', {
             'error': 'Username yoki parol xato'
