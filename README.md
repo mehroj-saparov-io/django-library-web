@@ -1,192 +1,131 @@
-# 📚 Django Library Web
+# BusterDev Books
 
-**Django Library Web** is an online library web application where admins can upload books (cover image + file), and users can browse and download books.
+![BusterDev Logo](https://via.placeholder.com/150x50?text=BusterDev+Books)
 
----
-
-## 🚀 Features
-
-### 👮 Admin
-
-* Add / delete / update books
-* For each book:
-
-  * Cover image
-  * Book file (PDF / EPUB / WORD)
-  * Multiple authors
-  * Multiple categories
-  * Publication year
-* Manage authors and categories
-
-### 👤 User
-
-* View list of books
-* View book detail page
-* Download books if logged in
-* View only (no download) if not logged in
+**BusterDev Books** — Django asosida ishlab chiqilgan kitoblar platformasi. Loyihaning asosiy maqsadi foydalanuvchilarga kitoblarni ko‘rish, qidirish va o‘qish imkoniyatini taqdim etishdir.  
 
 ---
 
-## 🧱 Technologies
+## 📦 Hozirgi imkoniyatlar
 
-* **Django**
-* **Python**
-* HTML / CSS
-* PostgreSQL
-* Django Admin
-* Django Authentication System
+- Foydalanuvchi ro‘yxatdan o‘tish, login/logout qilish.
+- Email tasdiqlash bilan yangi foydalanuvchi ro‘yxatdan o‘tadi.
+- Home sahifada barcha kitoblarni ko‘rish.
+- Kitoblarni **title, author, expert, category** bo‘yicha qidirish.
+- Category bo‘yicha filtrlash.
+- Har bir kitob uchun alohida **book detail** sahifa.
+- Kitoblarni ko‘rish bepul, lekin **download qilish uchun login bo‘lishi shart**.
+- Navbar-da foydalanuvchi holati (login/register yoki username/logout) ko‘rinadi.
+- Footer-da email va Telegram aloqa ma’lumotlari.
 
 ---
 
-## 📁 Project Structure
+## ⚙️ Texnologiyalar
 
-```text
-library_project/
+- Django 5.x
+- Python 3.13
+- PostgreSQL (ma’lumotlar bazasi)
+- Bootstrap 5 (frontend)
+- SMTP Email yuborish (Gmail orqali)
+- Django messages framework (flash messages)
+
+---
+
+## 🗂 Loyihaning tuzilishi
+
+```
+
+project_root/
 │
-├── library_project/
-│   ├── settings.py
-│   ├── urls.py
-│
-├── books/
+├── books/                 # Kitoblar ilovasi
 │   ├── models.py
 │   ├── views.py
-│   ├── admin.py
 │   ├── urls.py
-│
-├── users/
-│
-├── templates/
-│   └── books/
-│       ├── book_list.html
+│   └── templates/books/
+│       ├── home.html
 │       └── book_detail.html
 │
-├── media/
-│   ├── book_covers/
-│   └── book_files/
+├── users/                 # Foydalanuvchi ilovasi
+│   ├── views.py
+│   ├── urls.py
+│   └── templates/users/
+│       ├── register.html
+│       ├── login.html
+│       └── verify_email.html
 │
+├── templates/
+│   └── base.html           # Umumiy template
+│
+├── static/
+├── media/
 ├── manage.py
-└── README.md
-```
+└── core/
+└── settings.py
+
+````
 
 ---
 
-## ⚙️ Installation
+## 🚀 Loyihani ishga tushirish
 
-### 1️⃣ Clone the repository
-
+1. **Clone qilamiz:**
 ```bash
-git clone https://github.com/mehroj-saparov-io/django-library-web.git
+git clone <repository_url>
 cd django-library-web
-```
+````
 
----
-
-### 2️⃣ Create virtual environment
+2. **Virtual environment yaratish va faollashtirish:**
 
 ```bash
 python -m venv venv
-source venv/bin/activate   # Linux / Mac
+source venv/bin/activate   # Mac/Linux
 venv\Scripts\activate      # Windows
 ```
 
----
-
-### 3️⃣ Install required packages
+3. **Dependencies o‘rnatish:**
 
 ```bash
-pip install django pillow
+pip install -r requirements.txt
 ```
 
-> `Pillow` is required for image upload support
-
----
-
-### 4️⃣ Run migrations
+4. **Ma’lumotlar bazasini sozlash:**
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
----
-
-### 5️⃣ Create superuser
+5. **Superuser yaratish (optional):**
 
 ```bash
 python manage.py createsuperuser
 ```
 
----
-
-### 6️⃣ Run development server
+6. **Serverni ishga tushirish:**
 
 ```bash
 python manage.py runserver
 ```
 
-👉 Open in browser:
+---
 
-* Website: [http://127.0.0.1:8000](http://127.0.0.1:8000)
-* Admin panel: [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin)
+## 📌 Kelajakda qo‘shilishi rejalashtirilganlar
+
+* **Pagination**: Home va category sahifalarida kitoblarni sahifalash.
+* **User profile**: Foydalanuvchi profilini ko‘rish va tahrirlash.
+* **Kitob yuklash**: Foydalanuvchi faqat login bo‘lsa kitobni download qilishi mumkin.
+* **Book ratings & reviews**: Kitobga baho berish va sharh qoldirish.
+* **Admin panel optimizatsiyasi**: Kitob va kategoriyalarni qulay boshqarish.
+* **Responsive dizayn**: Mobil qurilmalar uchun optimizatsiya.
+* **Search suggestions / autocomplete**: Qidiruvni tezlashtirish.
 
 ---
 
-## 🧩 Core Models
+## 📧 Aloqa
 
-### 📘 Book
-
-* `title`
-* `cover_image`
-* `book_file`
-* `authors` (ManyToMany)
-* `categories` (ManyToMany)
-* `published_year`
-* `description`
-
-### ✍️ Author
-
-* `full_name`
-* `birth_year`
-
-### 🏷 Category
-
-* `name`
+* Email: [saparov.dev2026@gmail.com](mailto:saparov.dev2026@gmail.com)
+* Telegram: [@mr_mehroj](https://t.me/mr_mehroj)
 
 ---
 
-## 🔐 Permissions
-
-| Action        | Guest | User | Admin |
-| ------------- | ----- | ---- | ----- |
-| Book list     | ✅     | ✅    | ✅     |
-| Detail page   | ✅     | ✅    | ✅     |
-| Download book | ❌     | ✅    | ✅     |
-| Add book      | ❌     | ❌    | ✅     |
-
----
-
-## 🖼 Media Configuration
-
-`settings.py`:
-
-```python
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-```
-
-`urls.py`:
-
-```python
-from django.conf import settings
-from django.conf.urls.static import static
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-```
-
----
-
-## 👨‍💻 Author
-
-**Your Name**
-GitHub: [https://github.com/mehroj-saparov-io](https://github.com/mehroj-saparov-io)
-
+> **Eslatma:** Loyihani rivojlantirish davomida frontend va backend qismida yaxshilanishlar kiritilishi mumkin.
