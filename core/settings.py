@@ -145,3 +145,12 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Session 30 daqiqa (soniya bilan)
+SESSION_COOKIE_AGE = 60 * 30  
+
+# Har requestda yangilanmasin
+SESSION_SAVE_EVERY_REQUEST = False
+
+# Brauzer yopilganda session o‘chsin
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False

@@ -2,20 +2,22 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
 from django.core.mail import send_mail
+
 from .utils import generate_code
+
+
+SESSION_EXPIRE_TIME = 60 * 15  # 15 daqiqa
+
 
 def register_view(request):
     if request.method == 'POST':
-        # request.session.flush()
-
-        username = request.POST['username'].strip()
-        email = request.POST['email'].lower().strip()
-        password = request.POST['password']
+        username = request.POST.get('username', '').strip()
+        email = request.POST.get('email', '').lower().strip()
+        password = request.POST.get('password')
 
         if User.objects.filter(email=email).exists():
-            return render(request, 'register.html', {
+            return render(request, 'users/register.html', {
                 'error': 'Bu email allaqachon ishlatilgan'
             })
 
@@ -25,6 +27,9 @@ def register_view(request):
             })
 
         code = generate_code()
+
+        # eski sessionni tozalaymiz
+        request.session.flush()
 
         request.session['verify_code'] = code
         request.session['register_data'] = {
@@ -38,11 +43,10 @@ def register_view(request):
                 subject="BusterDev — Email tasdiqlash kodi",
                 message=(
                     "Assalomu alaykum!\n\n"
-                    "Bizning demo Auth loyihamizdan ro‘yxatdan o‘tishni "
-                    "tasdiqlash uchun kodingiz:\n\n"
+                    "Ro‘yxatdan o‘tishni tasdiqlash kodingiz:\n\n"
                     f"{code}\n\n"
                     "Agar bu amalni siz bajarmagan bo‘lsangiz, "
-                    "ushbu xabarni e’tiborsiz qoldiring.\n\n"
+                    "xabarni e’tiborsiz qoldiring.\n\n"
                     "Hurmat bilan,\n"
                     "BusterDev jamoasi"
                 ),
@@ -59,6 +63,7 @@ def register_view(request):
 
     return render(request, 'users/register.html')
 
+
 def verify_email(request):
     if request.method == 'POST':
         code = request.POST.get('code')
@@ -69,13 +74,12 @@ def verify_email(request):
             })
 
         data = request.session.get('register_data')
+        if not data:
+            messages.error(request, "Session muddati tugagan. Qayta ro‘yxatdan o‘ting.")
+            return redirect('register')
 
-        # 🔐 HIMOYA: agar user oldin yaratilgan bo‘lsa
         if User.objects.filter(username=data['username']).exists():
-            messages.info(
-                request,
-                "Bu akkaunt allaqachon tasdiqlangan."
-            )
+            messages.info(request, "Bu akkaunt allaqachon tasdiqlangan.")
             return redirect('login')
 
         user = User.objects.create_user(
@@ -84,18 +88,15 @@ def verify_email(request):
             password=data['password']
         )
 
-        login(request, user)
+        # sessionni yangilab login qilamiz
         request.session.flush()
+        login(request, user)
+        request.session.set_expiry(SESSION_EXPIRE_TIME)
 
-        messages.success(
-            request,
-            "Email tasdiqlandi! Xush kelibsiz 👋"
-        )
-
+        messages.success(request, "Email tasdiqlandi! Xush kelibsiz 👋")
         return redirect('home')
 
     return render(request, 'users/verify_email.html')
-
 
 
 def login_view(request):
@@ -104,13 +105,14 @@ def login_view(request):
         password = request.POST.get('password')
 
         user = authenticate(request, username=username, password=password)
-        if user is not None:
+        if user:
             login(request, user)
+            request.session.set_expiry(SESSION_EXPIRE_TIME)
             return redirect('home')
-        else:
-            return render(request, 'users/login.html', {
-                'error': 'Username yoki parol xato'
-            })
+
+        return render(request, 'users/login.html', {
+            'error': 'Username yoki parol xato'
+        })
 
     return render(request, 'users/login.html')
 
